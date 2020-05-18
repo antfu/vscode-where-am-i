@@ -1,0 +1,82 @@
+{
+  "name": "where-am-i",
+  "displayName": "Where Am I?",
+  "description": "Identify your current working folder in status bar",
+  "version": "0.1.0",
+  "publisher": "antfu",
+  "icon": "res/logo.png",
+  "licenses": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antfu/vscode-where-am-i"
+  },
+  "engines": {
+    "vscode": "^1.20.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Project Name In StatusBar extension configuration",
+      "properties": {
+        "where-am-i.source": {
+          "type": "string",
+          "enum": [
+            "none",
+            "folderName"
+          ],
+          "default": "folderName",
+          "description": "Defines way of getting project name"
+        },
+        "where-am-i.align": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "left",
+          "description": "Defines The alignment of the label, requires restart of vscode"
+        },
+        "where-am-i.alignPriority": {
+          "type": "number",
+          "default": 100000,
+          "description": "Defines priority of the label. Higher values mean the label should be shown more to the left, requires restart of vscode"
+        },
+        "where-am-i.textStyle": {
+          "type": "string",
+          "enum": [
+            "none",
+            "uppercase",
+            "lowercase"
+          ],
+          "default": "uppercase",
+          "description": "Defines project name text style inside template"
+        },
+        "where-am-i.template": {
+          "type": "string",
+          "default": "$(folder-opened) {project-name}",
+          "description": "Defines template of project name placeholder, you can use octicons to decorate your view"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config-ts": "^0.2.11",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^7.0.43",
+    "@types/vscode": "^1.45.1",
+    "eslint": "^7.0.0",
+    "typescript": "^2.6.1"
+  }
+}
