@@ -120,7 +120,6 @@ export function activate(context: ExtensionContext) {
     statusBarColor = projectSetting?.color || getProjectColor(projectPath)
     statusBarItem.text = statusBarName
     statusBarItem.color = statusBarColor
-    statusBarItem.command = 'where-am-i.config'
     statusBarItem.show()
   }
 
@@ -156,10 +155,12 @@ export function activate(context: ExtensionContext) {
       prompt: 'Project Name',
     }) ?? projectName
 
-    statusBarColor = await window.showInputBox({
-      value: statusBarColor,
-      prompt: 'Project Color',
-    }) ?? statusBarColor
+    if (getColorful()) {
+      statusBarColor = await window.showInputBox({
+        value: statusBarColor,
+        prompt: 'Project Color',
+      }) ?? statusBarColor
+    }
 
     const settings = getProjectSetting()
     if (!settings[projectPath])

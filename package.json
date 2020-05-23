@@ -2,7 +2,7 @@
   "name": "where-am-i",
   "displayName": "Where Am I?",
   "description": "Identify your current working folder in status bar",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "antfu",
   "icon": "res/logo.png",
   "licenses": "MIT",
@@ -21,6 +21,13 @@
   ],
   "main": "./out/extension",
   "contributes": {
+    "commands": [
+      {
+        "command": "where-am-i.config",
+        "category": "Where Am I",
+        "title": "Config the name and color"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "Project Name In StatusBar extension configuration",
