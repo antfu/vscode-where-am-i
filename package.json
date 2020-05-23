@@ -2,7 +2,7 @@
   "name": "where-am-i",
   "displayName": "Where Am I?",
   "description": "Identify your current working folder in status bar",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "antfu",
   "icon": "res/logo.png",
   "licenses": "MIT",
