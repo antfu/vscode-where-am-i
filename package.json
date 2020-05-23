@@ -25,14 +25,10 @@
       "type": "object",
       "title": "Project Name In StatusBar extension configuration",
       "properties": {
-        "where-am-i.source": {
-          "type": "string",
-          "enum": [
-            "none",
-            "folderName"
-          ],
-          "default": "folderName",
-          "description": "Defines way of getting project name"
+        "where-am-i.colorful": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use color"
         },
         "where-am-i.align": {
           "type": "string",
@@ -62,6 +58,11 @@
           "type": "string",
           "default": "$(folder-opened) {project-name}",
           "description": "Defines template of project name placeholder, you can use octicons to decorate your view"
+        },
+        "where-am-i.projectSetting": {
+          "type": "object",
+          "default": {},
+          "description": "Project preference"
         }
       }
     }

@@ -1,46 +1,64 @@
-import * as vscode from 'vscode'
+import path from 'path'
+import { ConfigurationTarget, workspace, StatusBarAlignment, TextEditor, window, ExtensionContext, Disposable, commands } from 'vscode'
+
+type ProjectSetting = Record<string, {
+  color?: string
+  name?: string
+}>
 
 function getSource(): string {
-  return vscode.workspace.getConfiguration('where-am-i').get('source') as string
+  return workspace.getConfiguration('where-am-i').get('source') as string
 }
 
 function getTextStyle(): string {
-  return vscode.workspace.getConfiguration('where-am-i').get('textStyle') as string
+  return workspace.getConfiguration('where-am-i').get('textStyle') as string
 }
 
 function alignPriority(): number {
-  return +(vscode.workspace.getConfiguration('where-am-i').get('alignPriority') as string)
+  return +(workspace.getConfiguration('where-am-i').get('alignPriority') as string)
 }
 
 function getTemplate(): string {
-  return vscode.workspace.getConfiguration('where-am-i').get('template') as string
+  return workspace.getConfiguration('where-am-i').get('template') as string
 }
 
-function getAlign(): vscode.StatusBarAlignment {
-  const align: string = vscode.workspace.getConfiguration('where-am-i').get('align') as string
+function getColorful(): boolean {
+  return workspace.getConfiguration('where-am-i').get('colorful') as boolean
+}
+
+function getProjectSetting(): ProjectSetting {
+  return workspace.getConfiguration('where-am-i').get('projectSetting') as ProjectSetting
+}
+
+function setProjectSetting(v: ProjectSetting) {
+  workspace.getConfiguration('where-am-i').update('projectSetting', v, ConfigurationTarget.Global)
+}
+
+function getAlign(): StatusBarAlignment {
+  const align: string = workspace.getConfiguration('where-am-i').get('align') as string
   switch (align) {
     case 'left':
-      return vscode.StatusBarAlignment.Left
+      return StatusBarAlignment.Left
     case 'right':
-      return vscode.StatusBarAlignment.Right
+      return StatusBarAlignment.Right
     default:
-      return vscode.StatusBarAlignment.Left
+      return StatusBarAlignment.Left
   }
 }
 
-function getProjectNameByFolder(): string | undefined {
-  if (Array.isArray(vscode.workspace.workspaceFolders)) {
-    if (vscode.workspace.workspaceFolders.length === 1) {
-      return vscode.workspace.workspaceFolders[0].name
+function getProjectPath(): string | undefined {
+  if (Array.isArray(workspace.workspaceFolders)) {
+    if (workspace.workspaceFolders.length === 1) {
+      return workspace.workspaceFolders[0].uri.path
     }
-    else if (vscode.workspace.workspaceFolders.length > 1) {
-      const activeTextEditor: vscode.TextEditor | undefined = vscode.window.activeTextEditor
+    else if (workspace.workspaceFolders.length > 1) {
+      const activeTextEditor: TextEditor | undefined = window.activeTextEditor
       if (activeTextEditor) {
-        const workspaceFolder = vscode.workspace.workspaceFolders.find(folder =>
+        const workspaceFolder = workspace.workspaceFolders.find(folder =>
           activeTextEditor.document.uri.path.startsWith(folder.uri.path),
         )
         if (workspaceFolder)
-          return workspaceFolder.name
+          return workspaceFolder.uri.path
       }
     }
   }
@@ -59,45 +77,51 @@ function stringToColour(str: string) {
   return colour
 }
 
-function getProjectColor() {
-  if (Array.isArray(vscode.workspace.workspaceFolders))
-    return stringToColour(vscode.workspace.workspaceFolders[0].uri.path)
+function getProjectColor(projectName: string) {
+  if (!projectName || !getColorful())
+    return undefined
+
+  return stringToColour(projectName)
 }
 
-export function activate(context: vscode.ExtensionContext) {
-  let onDidChangeWorkspaceFoldersDisposable: vscode.Disposable | undefined
-  let onDidChangeActiveTextEditorDisposable: vscode.Disposable | undefined
-  const statusBarItem = vscode.window.createStatusBarItem(getAlign(), alignPriority())
+function getProjectName(projectPath: string) {
+  const projectName = path.basename(projectPath)
+
+  switch (getTextStyle()) {
+    case 'uppercase':
+      return projectName.toUpperCase()
+    case 'lowercase':
+      return projectName.toLowerCase()
+    default:
+      return projectName
+  }
+}
+
+export function activate(context: ExtensionContext) {
+  let onDidChangeWorkspaceFoldersDisposable: Disposable | undefined
+  let onDidChangeActiveTextEditorDisposable: Disposable | undefined
+  const statusBarItem = window.createStatusBarItem(getAlign(), alignPriority())
+  let projectPath: string |undefined
+  let projectName = ''
+  let statusBarName = ''
+  let statusBarColor: string |undefined
 
   function updateStatusBarItem() {
-    let projectName: string | undefined
-
-    switch (getSource()) {
-      case 'none':
-        break
-      case 'folderName':
-        projectName = getProjectNameByFolder()
-        break
-    }
-
-    if (projectName) {
-      switch (getTextStyle()) {
-        case 'uppercase':
-          projectName = projectName.toUpperCase()
-          break
-        case 'lowercase':
-          projectName = projectName.toLowerCase()
-          break
-      }
-
-      statusBarItem.text = getTemplate().replace(/{project-name}/, projectName)
-      statusBarItem.color = getProjectColor()
-      statusBarItem.show()
-    }
-    else {
+    projectPath = getProjectPath()
+    if (!projectPath) {
       statusBarItem.text = ''
       statusBarItem.hide()
+      return
     }
+
+    const projectSetting = getProjectSetting()[projectPath]
+    projectName = projectSetting?.name || getProjectName(projectPath)
+    statusBarName = getTemplate().replace(/{project-name}/, projectName)
+    statusBarColor = projectSetting?.color || getProjectColor(projectPath)
+    statusBarItem.text = statusBarName
+    statusBarItem.color = statusBarColor
+    statusBarItem.command = 'where-am-i.config'
+    statusBarItem.show()
   }
 
   function updateSubscription() {
@@ -109,21 +133,47 @@ export function activate(context: vscode.ExtensionContext) {
     }
     else {
       !onDidChangeWorkspaceFoldersDisposable
-                && (onDidChangeWorkspaceFoldersDisposable = vscode.workspace.onDidChangeWorkspaceFolders(() => {
+                && (onDidChangeWorkspaceFoldersDisposable = workspace.onDidChangeWorkspaceFolders(() => {
                   updateSubscription()
                   updateStatusBarItem()
                 }))
 
-      Array.isArray(vscode.workspace.workspaceFolders) && (vscode.workspace.workspaceFolders.length > 1)
+      Array.isArray(workspace.workspaceFolders) && (workspace.workspaceFolders.length > 1)
         ? !onDidChangeActiveTextEditorDisposable && (onDidChangeActiveTextEditorDisposable
-                    = vscode.window.onDidChangeActiveTextEditor(() => updateStatusBarItem()))
+                    = window.onDidChangeActiveTextEditor(() => updateStatusBarItem()))
         : onDidChangeActiveTextEditorDisposable && onDidChangeActiveTextEditorDisposable.dispose()
     }
   }
 
   context.subscriptions.push(statusBarItem)
 
-  vscode.workspace.onDidChangeConfiguration(() => {
+  commands.registerCommand('where-am-i.config', async() => {
+    if (!projectName || !projectPath)
+      return
+
+    projectName = await window.showInputBox({
+      value: projectName,
+      prompt: 'Project Name',
+    }) ?? projectName
+
+    statusBarColor = await window.showInputBox({
+      value: statusBarColor,
+      prompt: 'Project Color',
+    }) ?? statusBarColor
+
+    const settings = getProjectSetting()
+    if (!settings[projectPath])
+      settings[projectPath] = {}
+
+    const projectSetting = settings[projectPath]
+    projectSetting.name = projectName
+    projectSetting.color = statusBarColor
+
+    setProjectSetting(settings)
+    updateStatusBarItem()
+  })
+
+  workspace.onDidChangeConfiguration(() => {
     updateSubscription()
     updateStatusBarItem()
   })

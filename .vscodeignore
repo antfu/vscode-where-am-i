@@ -8,3 +8,4 @@ src/**
 package-lock.json
 .eslintrc.js
 tsconfig.json
+screenshots/**
