@@ -2,7 +2,7 @@
   "name": "where-am-i",
   "displayName": "Where Am I?",
   "description": "Identify your current working folder in status bar",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "antfu",
   "icon": "res/logo.png",
   "licenses": "MIT",
@@ -51,20 +51,26 @@
           "default": 100000,
           "description": "Defines priority of the label. Higher values mean the label should be shown more to the left, requires restart of vscode"
         },
-        "where-am-i.textStyle": {
+        "where-am-i.textTransfrom": {
           "type": "string",
           "enum": [
             "none",
             "uppercase",
-            "lowercase"
+            "lowercase",
+            "capitalize"
           ],
-          "default": "uppercase",
+          "default": "capitalize",
           "description": "Defines project name text style inside template"
+        },
+        "where-am-i.icon": {
+          "type": "string",
+          "default": "folder-opened",
+          "description": "Codicon id"
         },
         "where-am-i.template": {
           "type": "string",
-          "default": "$(folder-opened) {project-name}",
-          "description": "Defines template of project name placeholder, you can use octicons to decorate your view"
+          "default": "{icon} {project-name}",
+          "description": "Defines template of project name placeholder"
         },
         "where-am-i.projectSetting": {
           "type": "object",
