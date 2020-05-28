@@ -145,6 +145,7 @@ export function activate(context: ExtensionContext) {
     statusBarColor = projectSetting?.color || getProjectColor(projectPath)
     statusBarItem.text = statusBarName
     statusBarItem.color = statusBarColor
+    statusBarItem.command = 'workbench.action.quickSwitchWindow'
     statusBarItem.show()
   }
 
