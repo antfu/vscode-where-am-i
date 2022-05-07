@@ -37,6 +37,11 @@
           "default": true,
           "description": "Use color"
         },
+        "where-am-i.colour": {
+          "type": "string",
+          "default": "",
+          "description": "Defines the default colour, with priority lower than 'projectSetting' but higher than 'stringToColour'"
+        },
         "where-am-i.align": {
           "type": "string",
           "enum": [

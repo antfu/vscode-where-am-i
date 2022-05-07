@@ -32,6 +32,10 @@ function getColorful(): boolean {
   return workspace.getConfiguration('where-am-i').get('colorful') as boolean
 }
 
+function getColour(): string {
+  return workspace.getConfiguration('where-am-i').get('colour') as string
+}
+
 function getProjectSetting(): ProjectSetting {
   return workspace.getConfiguration('where-am-i').get('projectSetting') as ProjectSetting
 }
@@ -73,7 +77,7 @@ function getProjectPath(): string | undefined {
     else if (workspace.workspaceFolders.length > 1) {
       const activeTextEditor: TextEditor | undefined = window.activeTextEditor
       if (activeTextEditor) {
-        const workspaceFolder = workspace.workspaceFolders.find(folder =>
+        const workspaceFolder = workspace.workspaceFolders.find((folder: any) =>
           activeTextEditor.document.uri.path.startsWith(folder.uri.path),
         )
         if (workspaceFolder)
@@ -96,11 +100,17 @@ function stringToColour(str: string) {
   return colour
 }
 
-function getProjectColor(projectName: string) {
-  if (!projectName || !getColorful())
-    return undefined
+function getProjectColor(projectName: string): string | undefined {
+  let projectColor
 
-  return stringToColour(projectName)
+  const defaultColor = getColour()
+  if (/^#[0-9A-F]{6}$/i.test(defaultColor)) return defaultColor
+  
+  if (projectName && getColorful()) {
+    projectColor = stringToColour(projectName)
+  }
+
+  return projectColor
 }
 
 const textTransforms: Record<string, (t: string) => string> = {
