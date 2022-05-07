@@ -101,13 +101,15 @@ function stringToColour(str: string) {
 }
 
 function getProjectColor(projectName: string): string | undefined {
-  let projectColor
+  let projectColor: string | undefined 
 
-  const defaultColor = getColour()
-  if (/^#[0-9A-F]{6}$/i.test(defaultColor)) return defaultColor
-  
-  if (projectName && getColorful()) {
-    projectColor = stringToColour(projectName)
+  if (getColorful()) {
+    const defaultColor = getColour()
+    if (/^#[0-9A-F]{6}$/i.test(defaultColor)) {
+      projectColor =  defaultColor
+    } else if (projectName) {
+      projectColor = stringToColour(projectName)
+    }
   }
 
   return projectColor
