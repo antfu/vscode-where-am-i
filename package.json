@@ -37,6 +37,11 @@
           "default": true,
           "description": "Use color"
         },
+        "where-am-i.color": {
+          "type": "string",
+          "default": "",
+          "description": "The color of status text. When not defined, a random color will be used based on the project name."
+        },
         "where-am-i.align": {
           "type": "string",
           "enum": [
