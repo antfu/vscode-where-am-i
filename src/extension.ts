@@ -87,7 +87,7 @@ function getProjectPath(): string | undefined {
   }
 }
 
-function stringToColour(str: string) {
+function stringToColor(str: string) {
   let hash = 0
   for (let i = 0; i < str.length; i++)
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
@@ -101,18 +101,13 @@ function stringToColour(str: string) {
 }
 
 function getProjectColor(projectName: string): string | undefined {
-  let projectColor: string | undefined 
+  if (!getColorful())
+    return
 
-  if (getColorful()) {
-    const defaultColor = getColor()
-    if (/^#[0-9A-F]{6}$/i.test(defaultColor)) {
-      projectColor =  defaultColor
-    } else if (projectName) {
-      projectColor = stringToColour(projectName)
-    }
-  }
+  if (!projectName)
+    return getColor() || undefined
 
-  return projectColor
+  return getColor() || stringToColor(projectName)
 }
 
 const textTransforms: Record<string, (t: string) => string> = {
