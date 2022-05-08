@@ -1,7 +1,7 @@
 {
   "name": "where-am-i",
   "displayName": "Where Am I?",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "packageManager": "pnpm@7.0.1",
   "description": "Identify your current working folder in status bar",
   "publisher": "antfu",
