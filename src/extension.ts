@@ -1,5 +1,6 @@
 import path from 'path'
-import { ConfigurationTarget, workspace, StatusBarAlignment, TextEditor, window, ExtensionContext, Disposable, commands } from 'vscode'
+import type { Disposable, ExtensionContext, TextEditor } from 'vscode'
+import { ConfigurationTarget, StatusBarAlignment, commands, window, workspace } from 'vscode'
 import icons from './icons'
 
 type ProjectSetting = Record<string, {
@@ -129,11 +130,11 @@ export function activate(context: ExtensionContext) {
   let onDidChangeWorkspaceFoldersDisposable: Disposable | undefined
   let onDidChangeActiveTextEditorDisposable: Disposable | undefined
   const statusBarItem = window.createStatusBarItem(getAlign(), alignPriority())
-  let projectPath: string |undefined
+  let projectPath: string | undefined
   let projectName = ''
   let statusBarName = ''
-  let statusBarColor: string |undefined
-  let statusBarIcon: string |undefined
+  let statusBarColor: string | undefined
+  let statusBarIcon: string | undefined
 
   function updateStatusBarItem() {
     projectPath = getProjectPath()
@@ -178,7 +179,7 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(statusBarItem)
 
-  commands.registerCommand('where-am-i.config', async() => {
+  commands.registerCommand('where-am-i.config', async () => {
     if (!projectName || !projectPath)
       return
 
