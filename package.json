@@ -40,7 +40,7 @@
         "where-am-i.color": {
           "type": "string",
           "default": "",
-          "description": "Defines the default color, with priority lower than 'projectSetting' but higher than 'stringToColour'"
+          "description": "The color of status text. When not defined, a random color will be used based on the project name."
         },
         "where-am-i.align": {
           "type": "string",
