@@ -32,8 +32,8 @@ function getColorful(): boolean {
   return workspace.getConfiguration('where-am-i').get('colorful') as boolean
 }
 
-function getColour(): string {
-  return workspace.getConfiguration('where-am-i').get('colour') as string
+function getColor(): string {
+  return workspace.getConfiguration('where-am-i').get('color') as string
 }
 
 function getProjectSetting(): ProjectSetting {
@@ -104,7 +104,7 @@ function getProjectColor(projectName: string): string | undefined {
   let projectColor: string | undefined 
 
   if (getColorful()) {
-    const defaultColor = getColour()
+    const defaultColor = getColor()
     if (/^#[0-9A-F]{6}$/i.test(defaultColor)) {
       projectColor =  defaultColor
     } else if (projectName) {
