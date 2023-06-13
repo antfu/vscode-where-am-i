@@ -27,16 +27,11 @@
         "command": "where-am-i.config",
         "category": "Where Am I",
         "title": "Config the name and color"
-      },
-      {
-        "command": "where-am-i.open",
-        "category": "Where Am I",
-        "title": "Open project lists"
       }
     ],
     "keybindings": [
       {
-        "command": "where-am-i.open",
+        "command": "workbench.action.quickSwitchWindow",
         "key": "ctrl+shift+w"
       }
     ],
