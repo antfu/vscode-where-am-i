@@ -1,7 +1,7 @@
 {
   "name": "where-am-i",
   "displayName": "Where Am I?",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "packageManager": "pnpm@7.0.1",
   "description": "Identify your current working folder in status bar",
   "publisher": "antfu",
@@ -27,6 +27,17 @@
         "command": "where-am-i.config",
         "category": "Where Am I",
         "title": "Config the name and color"
+      },
+      {
+        "command": "where-am-i.open",
+        "category": "Where Am I",
+        "title": "Open project lists"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "where-am-i.open",
+        "key": "ctrl+shift+w"
       }
     ],
     "configuration": {
@@ -91,7 +102,8 @@
     "vscode:prepublish": "npm run build",
     "build": "tsc -p ./",
     "lint": "eslint .",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "pkg": "vsce package --no-dependencies"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.23.0",

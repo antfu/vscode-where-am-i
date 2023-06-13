@@ -210,6 +210,12 @@ export function activate(context: ExtensionContext) {
     updateStatusBarItem()
   })
 
+  commands.registerCommand('where-am-i.open', async () => {
+    if (!projectName || !projectPath)
+      return
+    commands.executeCommand('workbench.action.quickSwitchWindow')
+  })
+
   workspace.onDidChangeConfiguration(() => {
     updateSubscription()
     updateStatusBarItem()
