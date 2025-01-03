@@ -45,6 +45,10 @@ function setProjectSetting(v: ProjectSetting) {
   workspace.getConfiguration('where-am-i').update('projectSetting', v, ConfigurationTarget.Global)
 }
 
+function getCommand(): string {
+  return workspace.getConfiguration('where-am-i').get('command') as string
+}
+
 async function selectIcon(value?: string) {
   const items = icons.map(i => ({
     label: `$(${i})`,
@@ -153,7 +157,7 @@ export function activate(context: ExtensionContext) {
     statusBarColor = projectSetting?.color || getProjectColor(projectPath)
     statusBarItem.text = statusBarName
     statusBarItem.color = statusBarColor
-    statusBarItem.command = 'workbench.action.quickSwitchWindow'
+    statusBarItem.command = getCommand()
     statusBarItem.show()
   }
 
