@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
     "target": "es6",
-    "outDir": "out",
     "lib": [
       "esnext"
     ],
-    "sourceMap": true,
     "rootDir": "src",
-    "esModuleInterop": true,
+    "module": "commonjs",
     "strict": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "outDir": "out",
+    "sourceMap": true,
+    "esModuleInterop": true
   }
 }

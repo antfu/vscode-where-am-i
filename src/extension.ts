@@ -1,6 +1,6 @@
-import path from 'path'
 import type { Disposable, ExtensionContext, TextEditor } from 'vscode'
-import { ConfigurationTarget, StatusBarAlignment, commands, window, workspace } from 'vscode'
+import path from 'node:path'
+import { commands, ConfigurationTarget, StatusBarAlignment, window, workspace } from 'vscode'
 import icons from './icons'
 
 type ProjectSetting = Record<string, {
@@ -148,8 +148,8 @@ export function activate(context: ExtensionContext) {
     projectName = projectSetting?.name || getProjectName(projectPath)
     statusBarIcon = projectSetting?.icon || getIcon()
     statusBarName = getTemplate()
-      .replace(/{project-name}/, projectName)
-      .replace(/{icon}/, `$(${statusBarIcon})`)
+      .replace(/\{project-name\}/, projectName)
+      .replace(/\{icon\}/, `$(${statusBarIcon})`)
     statusBarColor = projectSetting?.color || getProjectColor(projectPath)
     statusBarItem.text = statusBarName
     statusBarItem.color = statusBarColor
