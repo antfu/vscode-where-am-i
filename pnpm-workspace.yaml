@@ -1,0 +1,4 @@
+onlyBuiltDependencies:
+  - '@vscode/vsce-sign'
+  - keytar
+  - vsxpub
