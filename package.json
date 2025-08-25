@@ -68,6 +68,15 @@
           "default": "capitalize",
           "description": "Defines project name text style inside template"
         },
+        "where-am-i.command": {
+          "type": "string",
+          "enum": [
+            "workbench.action.quickSwitchWindow",
+            "workbench.action.openRecent"
+          ],
+          "default": "workbench.action.quickSwitchWindow",
+          "description": "The command to execute when clicking the status bar item."
+        },
         "where-am-i.icon": {
           "type": "string",
           "default": "folder-opened",
