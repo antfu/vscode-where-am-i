@@ -1,6 +1,8 @@
 import type { Disposable, ExtensionContext, TextEditor } from 'vscode'
 import path from 'node:path'
+import { defineExtension } from 'reactive-vscode'
 import { commands, ConfigurationTarget, StatusBarAlignment, window, workspace } from 'vscode'
+import { config } from './config'
 import icons from './icons'
 
 type ProjectSetting = Record<string, {
@@ -13,36 +15,16 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
 }
 
-function getTextTransform(): string {
-  return workspace.getConfiguration('where-am-i').get('textTransfrom') as string
-}
-
-function getIcon(): string {
-  return workspace.getConfiguration('where-am-i').get('icon') as string
-}
-
 function alignPriority(): number {
-  return +(workspace.getConfiguration('where-am-i').get('alignPriority') as string)
-}
-
-function getTemplate(): string {
-  return workspace.getConfiguration('where-am-i').get('template') as string
-}
-
-function getColorful(): boolean {
-  return workspace.getConfiguration('where-am-i').get('colorful') as boolean
-}
-
-function getColor(): string {
-  return workspace.getConfiguration('where-am-i').get('color') as string
+  return +config.alignPriority
 }
 
 function getProjectSetting(): ProjectSetting {
-  return workspace.getConfiguration('where-am-i').get('projectSetting') as ProjectSetting
+  return config.projectSetting as ProjectSetting
 }
 
 function setProjectSetting(v: ProjectSetting) {
-  workspace.getConfiguration('where-am-i').update('projectSetting', v, ConfigurationTarget.Global)
+  config.$update('projectSetting', v, ConfigurationTarget.Global)
 }
 
 async function selectIcon(value?: string) {
@@ -102,13 +84,13 @@ function stringToColor(str: string) {
 }
 
 function getProjectColor(projectName: string): string | undefined {
-  if (!getColorful())
+  if (!config.colorful)
     return
 
   if (!projectName)
-    return getColor() || undefined
+    return config.color || undefined
 
-  return getColor() || stringToColor(projectName)
+  return config.color || stringToColor(projectName)
 }
 
 const textTransforms: Record<string, (t: string) => string> = {
@@ -119,14 +101,14 @@ const textTransforms: Record<string, (t: string) => string> = {
 
 function getProjectName(projectPath: string) {
   const projectName = path.basename(projectPath)
-  const transform = getTextTransform()
+  const transform = config.textTransfrom
 
   if (textTransforms[transform])
     return textTransforms[transform](projectName)
   return projectName
 }
 
-export function activate(context: ExtensionContext) {
+const { activate, deactivate } = defineExtension((context: ExtensionContext) => {
   let onDidChangeWorkspaceFoldersDisposable: Disposable | undefined
   let onDidChangeActiveTextEditorDisposable: Disposable | undefined
   const statusBarItem = window.createStatusBarItem(getAlign(), alignPriority())
@@ -146,8 +128,8 @@ export function activate(context: ExtensionContext) {
 
     const projectSetting = getProjectSetting()[projectPath]
     projectName = projectSetting?.name || getProjectName(projectPath)
-    statusBarIcon = projectSetting?.icon || getIcon()
-    statusBarName = getTemplate()
+    statusBarIcon = projectSetting?.icon || config.icon
+    statusBarName = config.template
       .replace(/\{project-name\}/, projectName)
       .replace(/\{icon\}/, `$(${statusBarIcon})`)
     statusBarColor = projectSetting?.color || getProjectColor(projectPath)
@@ -188,7 +170,7 @@ export function activate(context: ExtensionContext) {
       prompt: 'Project Name',
     }) ?? projectName
 
-    if (getColorful()) {
+    if (config.colorful) {
       statusBarColor = await window.showInputBox({
         value: statusBarColor,
         prompt: 'Project Color',
@@ -217,4 +199,6 @@ export function activate(context: ExtensionContext) {
 
   updateSubscription()
   updateStatusBarItem()
-}
+})
+
+export { activate, deactivate }

@@ -3,7 +3,7 @@
   "name": "where-am-i",
   "displayName": "Where Am I?",
   "version": "0.2.1",
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.19.0",
   "description": "Identify your current working folder in status bar",
   "license": "MIT",
   "repository": {
@@ -13,7 +13,7 @@
   "categories": [
     "Other"
   ],
-  "main": "./out/extension",
+  "main": "./dist/index.js",
   "icon": "res/logo.png",
   "engines": {
     "vscode": "^1.62.0"
@@ -87,23 +87,29 @@
     }
   },
   "scripts": {
-    "build": "tsc -p ./",
-    "lint": "eslint .",
-    "watch": "tsc -watch -p ./",
-    "vscode:prepublish": "npm run build",
-    "ext:publish": "vsce publish --no-dependencies",
     "package": "vsce package --no-dependencies",
-    "release": "bumpp"
+    "build": "tsdown src/index.ts --external vscode",
+    "dev": "pnpm build --watch --sourcemap",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "release": "bumpp",
+    "prepare": "vscode-ext-gen --output src/generated/meta.ts",
+    "vscode:prepublish": "npm run build"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.2.1",
-    "@types/node": "^24.2.0",
+    "@antfu/eslint-config": "^6.0.0",
+    "@types/node": "^24.9.1",
     "@types/vscode": "^1.62.0",
-    "@vscode/vsce": "^3.6.0",
-    "bumpp": "^10.2.3",
-    "eslint": "^9.33.0",
-    "ovsx": "^0.10.5",
-    "typescript": "^5.9.2",
-    "vsxpub": "^0.1.0"
+    "@vscode/vsce": "^3.6.2",
+    "bumpp": "^10.3.1",
+    "eslint": "^9.38.0",
+    "reactive-vscode": "^0.4.0",
+    "taze": "^19.8.1",
+    "tsdown": "^0.15.9",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
+    "vscode-ext-gen": "^1.3.0",
+    "vsxpub": "^0.1.2"
   }
 }

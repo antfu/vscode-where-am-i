@@ -1,15 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": [
-      "esnext"
-    ],
-    "rootDir": "src",
-    "module": "commonjs",
+    "target": "es2017",
+    "lib": ["esnext"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "strict": true,
-    "noUnusedLocals": true,
-    "outDir": "out",
-    "sourceMap": true,
-    "esModuleInterop": true
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
   }
 }
