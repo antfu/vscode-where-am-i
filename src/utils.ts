@@ -35,7 +35,32 @@ export function getProjectPath(): string | undefined {
   }
 }
 
+export function getProjectColor(projectName: string, isDark: boolean): string | undefined {
+  if (!config.colorful)
+    return
+
+  if (!projectName)
+    return config.color || undefined
+
+  return config.color || stringToColor(projectName, isDark)
+}
+
+export function getProjectName(projectPath: string) {
+  const projectName = path.basename(projectPath)
+  const transform = config.textTransfrom
+
+  if (textTransforms[transform])
+    return textTransforms[transform](projectName)
+  return projectName
+}
+
+const colors = new Map<'dark' | 'light', Map<string, string>>(new Map([['dark', new Map()], ['light', new Map()]]))
+
 function stringToColor(str: string, isDark: boolean = false) {
+  const cached = colors.get(isDark ? 'dark' : 'light')?.get(str)
+  if (cached)
+    return cached
+
   let hash = 0
   for (let i = 0; i < str.length; i++)
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
@@ -47,6 +72,8 @@ function stringToColor(str: string, isDark: boolean = false) {
 
   const result = hslToHex(hue, saturation, lightness)
   logger.info(`stringToColor: ${str} -> ${result}`)
+  colors.get(isDark ? 'dark' : 'light')?.set(str, result)
+
   return result
 }
 
@@ -92,23 +119,4 @@ function hslToRgb(h: number, s: number, l: number) {
     Math.max(0, Math.round(g * 255)),
     Math.max(0, Math.round(b * 255)),
   ]
-}
-
-export function getProjectColor(projectName: string, isDark: boolean): string | undefined {
-  if (!config.colorful)
-    return
-
-  if (!projectName)
-    return config.color || undefined
-
-  return config.color || stringToColor(projectName, isDark)
-}
-
-export function getProjectName(projectPath: string) {
-  const projectName = path.basename(projectPath)
-  const transform = config.textTransfrom
-
-  if (textTransforms[transform])
-    return textTransforms[transform](projectName)
-  return projectName
 }
