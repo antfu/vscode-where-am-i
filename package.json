@@ -2,7 +2,7 @@
   "publisher": "antfu",
   "name": "where-am-i",
   "displayName": "Where Am I?",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "packageManager": "pnpm@10.19.0",
   "description": "Identify your current working folder in status bar",
   "license": "MIT",
