@@ -54,6 +54,10 @@ export function getProjectName(projectPath: string) {
   return projectName
 }
 
+export function getCommand(): string {
+  return config.command || 'workbench.action.quickSwitchWindow'
+}
+
 const colors = new Map<'dark' | 'light', Map<string, string>>(new Map([['dark', new Map()], ['light', new Map()]]))
 
 function stringToColor(str: string, isDark: boolean = false) {

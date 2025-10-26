@@ -3,7 +3,7 @@ import { defineExtension, useIsDarkTheme, watch } from 'reactive-vscode'
 import { commands, window, workspace } from 'vscode'
 import { alignPriority, config, getAlign, getProjectSetting, setProjectSetting } from './config'
 import icons from './icons'
-import { getProjectColor, getProjectName, getProjectPath } from './utils'
+import { getCommand, getProjectColor, getProjectName, getProjectPath } from './utils'
 
 async function selectIcon(value?: string) {
   const items = icons.map(i => ({
@@ -46,7 +46,7 @@ const { activate, deactivate } = defineExtension((context: ExtensionContext) => 
     statusBarColor = projectSetting?.color || getProjectColor(projectPath, isDark.value)
     statusBarItem.text = statusBarName
     statusBarItem.color = statusBarColor
-    statusBarItem.command = 'workbench.action.quickSwitchWindow'
+    statusBarItem.command = getCommand()
     statusBarItem.show()
   }
 
